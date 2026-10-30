@@ -1,4 +1,4 @@
-# Python Uploader
+# Python Uploader For mBot2
 
 **Язык / Language:** [Русский](README.md) · [English](README.en.md)
 
@@ -14,13 +14,13 @@
 
 1. Откройте [Releases](../../releases) этого репозитория.
 2. Скачайте:
-   - `Python_Uploader_0.1.0.exe`
-   - `Python_Uploader_0.1.0.exe.sha256` (контрольная сумма)
+   - `Python_Uploader.exe`
+   - `Python_Uploader.exe.sha256` (контрольная сумма)
 3. Проверьте целостность файла (PowerShell):
 
 ```powershell
-Get-FileHash .\Python_Uploader_0.1.0.exe -Algorithm SHA256
-Get-Content .\Python_Uploader_0.1.0.exe.sha256
+Get-FileHash .\Python_Uploader.exe -Algorithm SHA256
+Get-Content .\Python_Uploader.exe.sha256
 ```
 
 Хеши должны совпасть (в `.sha256` указан ожидаемый SHA256 и имя файла).
@@ -46,7 +46,7 @@ Exe **не подписан** сертификатом Authenticode. Windows м�
 |------------|-----------|
 | Windows 10/11 | Сборка exe рассчитана на Windows |
 | mBot2 / CyberPi | Питание включено |
-| USB-кабель с передачей данных | Зарядные-only кабели не подойдут |
+| USB-кабель с передачей данных | Зарядные кабели не подойдут |
 | Драйвер CH340 | VID:PID `1A86:7523` |
 | Закрытый mLink | И другие программы, занимающие тот же COM-порт |
 
@@ -55,7 +55,7 @@ Exe **не подписан** сертификатом Authenticode. Windows м�
 ## Как пользоваться
 
 1. Подключите робота по USB и включите питание.
-2. Запустите `Python_Uploader_0.1.0.exe`.
+2. Запустите `Python_Uploader.exe`.
 3. Выберите файл программы (`.py`) — кнопкой **Обзор**, перетаскиванием в окно или передав путь аргументом.
 4. В списке портов выберите **CyberPi / mBot2**.
 5. Нажмите **Загрузить на робота** (или `Ctrl+Enter`).
@@ -65,7 +65,7 @@ Exe **не подписан** сертификатом Authenticode. Windows м�
 ### Запуск с файлом из командной строки
 
 ```text
-Python_Uploader_0.1.0.exe "C:\path\to\program.py"
+Python_Uploader.exe "C:\path\to\program.py"
 ```
 
 ### Возможности интерфейса
@@ -80,55 +80,16 @@ Python_Uploader_0.1.0.exe "C:\path\to\program.py"
 
 ---
 
-## VS Code / Cursor
+## VS Code
 
-В проекте можно привязать задачу или кнопку статус-бара к exe и текущему файлу `${file}`:
-
-```json
-"mbot2Uploader.exePath": "mBot2_upload/dist/Python_Uploader_0.1.0.exe"
-```
-
-Task запускает Uploader с путём к открытому `.py`. Если окно уже открыто, подставляется новый файл.
-
----
-
-## Сборка из исходников
-
-Нужен Python 3.10+ (проверено на 3.14) и Windows.
-
-```bat
-cd mBot2_upload
-build_exe.cmd
-```
-
-Результат: `dist\Python_Uploader.exe`. Для релиза скопируйте в версионированное имя и посчитайте SHA256:
-
-```powershell
-Copy-Item dist\Python_Uploader.exe dist\Python_Uploader_0.1.0.exe
-Get-FileHash dist\Python_Uploader_0.1.0.exe -Algorithm SHA256
-```
-
-Запуск без сборки:
-
-```bat
-python upload_gui.py
-python upload_gui.py program.py
-```
-
-Зависимости для разработки: см. `requirements.txt` (drag-and-drop — `windnd`; `pyserial` и тема `sv_ttk` уже лежат в папке проекта).
-
-CLI без GUI:
-
-```bat
-python usb_upload.py program.py
-python usb_upload.py --port COM6 program.py
-```
+В проекте есть приложение для привязки кнопки статус-бара к exe и текущему файлу `${file}`, запуск по горячей клавише F5.
+Task запускает Python_Uploader.exe с путём к открытому `.py`. Если окно уже открыто, подставляется новый файл.
 
 ---
 
 ## Важно
 
-- Не загружайте на плату служебные заглушки вроде `cyberpi.py`, `mbot2.py`, `mbuild.py` — программа их пропускает.
+- Не загружайте на плату служебные файлы `cyberpi.py`, `mbot2.py`, `mbuild.py`, `event.py`, `pocket.py` — программа их пропускает.
 - На плате файл пишется как `/flash/main.py` (как в редакторе Makeblock).
 - Версия: **0.1.0**
 
