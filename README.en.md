@@ -1,4 +1,4 @@
-# Python Uploader
+# Python Uploader For mBot2
 
 **Language / Язык:** [Русский](README.md) · [English](README.en.md)
 
@@ -14,13 +14,13 @@ Club website: [юный-инженер.рф](https://юный-инженер.р�
 
 1. Open this repository’s [Releases](../../releases).
 2. Download:
-   - `Python_Uploader_0.1.0.exe`
-   - `Python_Uploader_0.1.0.exe.sha256` (checksum)
+   - `Python_Uploader.exe`
+   - `Python_Uploader.exe.sha256` (checksum)
 3. Verify the file (PowerShell):
 
 ```powershell
-Get-FileHash .\Python_Uploader_0.1.0.exe -Algorithm SHA256
-Get-Content .\Python_Uploader_0.1.0.exe.sha256
+Get-FileHash .\Python_Uploader.exe -Algorithm SHA256
+Get-Content .\Python_Uploader.exe.sha256
 ```
 
 The hashes must match (the `.sha256` file lists the expected SHA256 and file name).
@@ -55,7 +55,7 @@ Do not download the exe from third-party mirrors — always check the hash again
 ## How to use
 
 1. Connect the robot over USB and turn power on.
-2. Run `Python_Uploader_0.1.0.exe`.
+2. Run `Python_Uploader.exe`.
 3. Choose a program file (`.py`) — **Browse**, drag-and-drop into the window, or pass the path as an argument.
 4. In the port list, select **CyberPi / mBot2**.
 5. Click **Upload to robot** (or press `Ctrl+Enter`).
@@ -65,7 +65,7 @@ Starting the exe again with a new `.py` **does not open a second window**: the p
 ### Launch with a file from the command line
 
 ```text
-Python_Uploader_0.1.0.exe "C:\path\to\program.py"
+Python_Uploader.exe "C:\path\to\program.py"
 ```
 
 ### UI features
@@ -80,55 +80,16 @@ Settings are stored in `%LOCALAPPDATA%\Python_Uploader\`.
 
 ---
 
-## VS Code / Cursor
+## VS Code
 
-You can bind a task or status-bar button to the exe and the current `${file}`:
-
-```json
-"mbot2Uploader.exePath": "mBot2_upload/dist/Python_Uploader_0.1.0.exe"
-```
-
-The task starts Uploader with the open `.py` path. If a window is already open, the new file is substituted.
-
----
-
-## Build from source
-
-Python 3.10+ (tested on 3.14) and Windows are required.
-
-```bat
-cd mBot2_upload
-build_exe.cmd
-```
-
-Output: `dist\Python_Uploader.exe`. For a release, copy to a versioned name and compute SHA256:
-
-```powershell
-Copy-Item dist\Python_Uploader.exe dist\Python_Uploader_0.1.0.exe
-Get-FileHash dist\Python_Uploader_0.1.0.exe -Algorithm SHA256
-```
-
-Run without building:
-
-```bat
-python upload_gui.py
-python upload_gui.py program.py
-```
-
-Dev dependencies: see `requirements.txt` (drag-and-drop needs `windnd`; bundled `pyserial` and `sv_ttk` live in the project folder).
-
-CLI without GUI:
-
-```bat
-python usb_upload.py program.py
-python usb_upload.py --port COM6 program.py
-```
+The project includes an extension that binds a status-bar button to the exe and the current `${file}`, and supports launch with the F5 hotkey.
+The task starts `Python_Uploader.exe` with the path to the open `.py`. If a window is already open, the new file is substituted.
 
 ---
 
 ## Notes
 
-- Do not upload stub libraries such as `cyberpi.py`, `mbot2.py`, or `mbuild.py` — the app skips them.
+- Do not upload stub files `cyberpi.py`, `mbot2.py`, `mbuild.py`, `event.py`, `pocket.py` — the app skips them.
 - On the board the file is written as `/flash/main.py` (same as Makeblock’s editor).
 - Version: **0.1.0**
 
