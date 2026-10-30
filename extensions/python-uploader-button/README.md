@@ -1,4 +1,6 @@
-# Python Uploader Button For mBot2 / CyberPi
+# Расширение Python Uploader Button для VS Code
+
+**Язык / Language:** [Русский](README.md) · [English](README.en.md)
 
 Синяя кнопка **→ Uploader** в статус-баре Cursor/VS Code и клавиша **F5**.
 
