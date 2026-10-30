@@ -1,0 +1,28 @@
+{
+   "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Python Uploader: текущий файл",
+      "type": "shell",
+      "command": "Start-Process -FilePath '${workspaceFolder}\\Python_Uploader.exe' -ArgumentList '\"${file}\"'",
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "shell": {
+          "executable": "powershell.exe",
+          "args": ["-NoProfile", "-Command"]
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared",
+        "focus": false,
+        "close": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}
