@@ -1,2 +1,139 @@
-# Python-Uploader-for-mBot2
-A program for uploading Python code to an mBot2/CyberPi robot as *.py files via a USB connection without using mBlock. To make coding more convenient in the VSCode environment, the repository includes method signatures of the classes from the official Makeblock API. Additionally, an extension for quickly launching this program with the F5 hotkey.
+# Python Uploader
+
+**Язык / Language:** [Русский](README.md) · [English](README.en.md)
+
+Загрузка Python-программ на **mBot2 / CyberPi** по USB.
+
+Программа находит робота на COM-порту (чип CH340), переводит плату в режим записи и отправляет файл `.py` на робота — туда же, куда его пишет редактор Makeblock. После загрузки программа хранится на плате и работает без компьютера.
+
+Сайт клуба: [юный-инженер.рф](https://юный-инженер.рф/)
+
+---
+
+## Скачать (Windows)
+
+1. Откройте [Releases](../../releases) этого репозитория.
+2. Скачайте:
+   - `Python_Uploader_0.1.0.exe`
+   - `Python_Uploader_0.1.0.exe.sha256` (контрольная сумма)
+3. Проверьте целостность файла (PowerShell):
+
+```powershell
+Get-FileHash .\Python_Uploader_0.1.0.exe -Algorithm SHA256
+Get-Content .\Python_Uploader_0.1.0.exe.sha256
+```
+
+Хеши должны совпасть (в `.sha256` указан ожидаемый SHA256 и имя файла).
+
+### Предупреждение Windows SmartScreen
+
+Exe **не подписан** сертификатом Authenticode. Windows может показать:
+
+> Windows защитил ваш компьютер
+
+Это ожидаемо для небольшой утилиты без платной подписи кода. Если файл скачан с этой страницы релизов и SHA256 совпал:
+
+1. Нажмите **Подробнее**
+2. Затем **Выполнить в любом случае**
+
+Не скачивайте exe с посторонних зеркал — сверяйте хеш с релизом.
+
+---
+
+## Что нужно для работы
+
+| Требование | Пояснение |
+|------------|-----------|
+| Windows 10/11 | Сборка exe рассчитана на Windows |
+| mBot2 / CyberPi | Питание включено |
+| USB-кабель с передачей данных | Зарядные-only кабели не подойдут |
+| Драйвер CH340 | VID:PID `1A86:7523` |
+| Закрытый mLink | И другие программы, занимающие тот же COM-порт |
+
+---
+
+## Как пользоваться
+
+1. Подключите робота по USB и включите питание.
+2. Запустите `Python_Uploader_0.1.0.exe`.
+3. Выберите файл программы (`.py`) — кнопкой **Обзор**, перетаскиванием в окно или передав путь аргументом.
+4. В списке портов выберите **CyberPi / mBot2**.
+5. Нажмите **Загрузить на робота** (или `Ctrl+Enter`).
+
+Повторный запуск exe с новым `.py` **не открывает второе окно**: путь подставляется в уже запущенную программу, окно поднимается на передний план.
+
+### Запуск с файлом из командной строки
+
+```text
+Python_Uploader_0.1.0.exe "C:\path\to\program.py"
+```
+
+### Возможности интерфейса
+
+- Список USB-портов с пометкой CyberPi / mBot2
+- Журнал загрузки (сохранение, очистка, метки времени)
+- Темы: как в системе / светлая / тёмная
+- Язык: русский / English
+- Отмена записи во время загрузки
+
+Настройки сохраняются в `%LOCALAPPDATA%\Python_Uploader\`.
+
+---
+
+## VS Code / Cursor
+
+В проекте можно привязать задачу или кнопку статус-бара к exe и текущему файлу `${file}`:
+
+```json
+"mbot2Uploader.exePath": "mBot2_upload/dist/Python_Uploader_0.1.0.exe"
+```
+
+Task запускает Uploader с путём к открытому `.py`. Если окно уже открыто, подставляется новый файл.
+
+---
+
+## Сборка из исходников
+
+Нужен Python 3.10+ (проверено на 3.14) и Windows.
+
+```bat
+cd mBot2_upload
+build_exe.cmd
+```
+
+Результат: `dist\Python_Uploader.exe`. Для релиза скопируйте в версионированное имя и посчитайте SHA256:
+
+```powershell
+Copy-Item dist\Python_Uploader.exe dist\Python_Uploader_0.1.0.exe
+Get-FileHash dist\Python_Uploader_0.1.0.exe -Algorithm SHA256
+```
+
+Запуск без сборки:
+
+```bat
+python upload_gui.py
+python upload_gui.py program.py
+```
+
+Зависимости для разработки: см. `requirements.txt` (drag-and-drop — `windnd`; `pyserial` и тема `sv_ttk` уже лежат в папке проекта).
+
+CLI без GUI:
+
+```bat
+python usb_upload.py program.py
+python usb_upload.py --port COM6 program.py
+```
+
+---
+
+## Важно
+
+- Не загружайте на плату служебные заглушки вроде `cyberpi.py`, `mbot2.py`, `mbuild.py` — программа их пропускает.
+- На плате файл пишется как `/flash/main.py` (как в редакторе Makeblock).
+- Версия: **0.1.0**
+
+---
+
+## Обратная связь
+
+Вопросы и предложения — через Issues в этом репозитории или сайт клуба [юный-инженер.рф](https://юный-инженер.рф/).
