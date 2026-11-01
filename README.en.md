@@ -4,9 +4,9 @@
 
 Upload Python programs to **mBot2 / CyberPi** over USB.
 
-<img width="758" height="692" alt="image" src="https://github.com/user-attachments/assets/79a3d8c4-91b7-40a1-a0e8-381497303c10" />
+<img width="757" height="642" alt="image" src="https://github.com/user-attachments/assets/46fdf953-cd02-4442-9518-8e17749e2c87" />
 
-The program finds the robot on a COM port, puts the board into upload mode, and sends the `.py` file to the robot — the same place the Makeblock editor writes it. After upload, the program stays on the board and runs without a computer.
+The program finds the robot over USB (on a COM port) or Bluetooth LE (`Makeblock_LE`), puts the board into upload mode, and sends the `.py` file to the robot — the same place the Makeblock editor writes it. After upload, the program stays on the board and runs without a computer.
 
 ---
 
@@ -29,11 +29,11 @@ The hashes must match (the `.sha256` file contains the expected SHA256 and the f
 
 ## How to use
 
-1. Connect the robot over USB and turn the power on.
+1. Turn on the robot (connect via a USB data cable or enable Bluetooth on your PC).
 2. Start `Python_Uploader.exe`.
 3. Choose the `.py` program — with **Browse**, by dropping the file onto the window, or by passing the path as an argument.
-4. In the port list, select **CyberPi / mBot2**.
-5. Click **Upload to the robot** (or press `Ctrl+Enter`).
+4. In the robot list, select **CyberPi / mBot2** (`COMx` over USB or `BLE:...` over Bluetooth).
+5. Click **Upload to robot** (or press `Ctrl+Enter`).
 
 ### Start with a file from the command line
 
@@ -43,11 +43,12 @@ Python_Uploader.exe "C:\path\to\program.py"
 
 ### Interface
 
-- USB port list, with CyberPi / mBot2 marked
+- Automatic discovery of robots over USB (CH340) and Bluetooth LE (no manual Windows pairing required)
 - Upload log (save, clear, timestamps)
 - Themes: match the system / light / dark
 - Language: Russian / English
 - Cancel while an upload is in progress
+- Automatic update check and installation from GitHub
 
 Settings are stored in `%LOCALAPPDATA%\Python_Uploader\`.
 
@@ -59,9 +60,9 @@ Settings are stored in `%LOCALAPPDATA%\Python_Uploader\`.
 |-------------|--------|
 | Windows 10/11 | The build targets Windows |
 | mBot2 / CyberPi | Power is on |
-| USB cable that carries data | Charge-only cables will not work |
-| CH340 driver | VID:PID `1A86:7523` |
-| mLink is closed | And any other program using the same COM port |
+| USB or Bluetooth | USB data cable or PC Bluetooth LE adapter |
+| CH340 driver (for USB) | VID:PID `1A86:7523` |
+| mLink is closed | And any other program connected to the robot over USB or Bluetooth |
 
 ---
 
