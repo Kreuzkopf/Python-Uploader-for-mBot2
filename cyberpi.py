@@ -1,14 +1,16 @@
 """Сигнатуры библиотеки CyberPi для VS Code.
 
-На плате модуль ``cyberpi`` уже вшит в прошивку. Этот файл нужен редактору:
-автодополнение, подсказки и проверка вызовов. На компьютере функции ничего
-не делают.
+На CyberPi модуль уже вшит в прошивку. Этот файл нужен редактору:
+автодополнение, подсказки и проверка вызовов.
+На компьютере функции ничего не делают.
 
 В mBlock заливайте только свою программу. Этот файл на плату копировать
-не нужно: он подменит настоящую библиотеку.
+не нужно.
 
 Список функций — со страницы Python API Documentation for CyberPi.
-События (``event``) работают только в режиме Upload.
+События ``event`` работают только в режиме Upload.
+
+02.11.26 - добавлены все методы и объекты расширения Display+.
 """
 
 from __future__ import annotations
@@ -169,6 +171,49 @@ CloudLang = Literal[
     "italian",
     "dutch",
 ]
+SpriteIconName = Literal[
+    "Music",
+    "Image",
+    "Video",
+    "Clock",
+    "Play",
+    "Pause",
+    "Next",
+    "Prev",
+    "Sound",
+    "Temperature",
+    "Light",
+    "Motion",
+    "Home",
+    "Gear",
+    "List",
+    "Right",
+    "Wrong",
+    "Shut_down",
+    "Refresh",
+    "Trash_can",
+    "Download",
+    "Sunny",
+    "Cloudy",
+    "Rain",
+    "Snow",
+    "Train",
+    "Rocket",
+    "Truck",
+    "Car",
+    "Droplet",
+    "Distance",
+    "Fire",
+    "Magnetic",
+    "Gas",
+    "Vision",
+    "Color",
+    "Overcast",
+    "Sandstorm",
+    "Foggy",
+]
+MirrorAxis = Literal["x", "y"]
+SpriteEdge = Literal["edge"]
 
 
 def _keep(callback: F) -> F:
@@ -201,6 +246,7 @@ class _Audio:
         """Сыграть ноту и дождаться конца.
 
         note: 0–132. beat: длительность в долях, больше 0.
+
         type: инструмент, по умолчанию ``piano``.
         """
 
@@ -210,7 +256,9 @@ class _Audio:
 
         type: ``snare``, ``bass-drum``, ``side-stick``, ``crash-cymbal``,
         ``open-hi-hat``, ``closed-hi-hat``, ``tambourine``, ``hand-clap``,
-        ``claves``. beat больше 0.
+        ``claves``.
+
+        beat больше 0.
         """
 
     @staticmethod
@@ -270,6 +318,7 @@ class _Led:
         """Зажечь светодиоды платы.
 
         r, g, b: 0–255. В r можно передать имя цвета: ``red``, ``green`` и т.д.
+
         id: номер 1–5 или ``all``.
         """
 
@@ -336,9 +385,11 @@ class _Display:
         """Показать надпись.
 
         size: 16, 24 или 32.
+
         x: координата 0–128 или позиция ``center``, ``top_mid``, ``top_left``,
         ``top_right``, ``mid_left``, ``mid_right``, ``bottom_mid``,
         ``bottom_left``, ``bottom_right``.
+
         y: координата 0–128, если x задан числом.
         """
 
@@ -357,6 +408,313 @@ class _Display:
     @staticmethod
     def off() -> None:
         """Выключить подсветку экрана."""
+
+
+class _Background:
+    @staticmethod
+    def fill(r: int = 0, g: int = 0, b: int = 0) -> None:
+        """Залить фон экрана цветом RGB (Display+).
+
+        r: красный, 0–255.
+
+        g: зелёный, 0–255.
+
+        b: синий, 0–255.
+        """
+
+
+class _Screen:
+    @staticmethod
+    def render() -> None:
+        """Принудительно отрисовать кадр на экране (Display+)."""
+
+    @staticmethod
+    def is_color(x: int, y: int) -> int:
+        """Цвет пикселя на экране в формате RGB565 (Display+).
+
+        x: координата по горизонтали, 0–127.
+
+        y: координата по вертикали, 0–127.
+        """
+        return 0
+
+    @staticmethod
+    def get_color(x: int, y: int) -> int:
+        """Получить цвет пикселя на экране (Display+).
+
+        x: координата по горизонтали, 0–127.
+
+        y: координата по вертикали, 0–127.
+        """
+        return 0
+
+
+class _Sketch:
+    @staticmethod
+    def clear() -> None:
+        """Очистить все рисунки (Doodle) на экране (Display+)."""
+
+    @staticmethod
+    def start() -> None:
+        """Опустить кисть — начать рисование при перемещении (Display+)."""
+
+    @staticmethod
+    def end() -> None:
+        """Поднять кисть — закончить рисование (Display+)."""
+
+    @staticmethod
+    def set_color(r: int = 255, g: int = 255, b: int = 255) -> None:
+        """Задать цвет кисти RGB (Display+).
+
+        r: красный, 0–255.
+
+        g: зелёный, 0–255.
+
+        b: синий, 0–255.
+        """
+
+    @staticmethod
+    def set_size(size: int = 1) -> None:
+        """Задать толщину линии кисти (Display+).
+
+        size: толщина в пикселях.
+        """
+
+    @staticmethod
+    def set_speed(speed: int = 10) -> None:
+        """Задать скорость рисования (Display+).
+
+        speed: скорость перемещения кисти.
+        """
+
+    @staticmethod
+    def cw(angle: float = 10) -> None:
+        """Повернуть направление кисти по часовой стрелке (Display+).
+
+        angle: угол поворота в градусах.
+        """
+
+    @staticmethod
+    def set_angle(angle: float = 90) -> None:
+        """Установить направление кисти (Display+).
+
+        angle: угол направления в градусах.
+        """
+
+    @staticmethod
+    def move(step: float = 8) -> None:
+        """Переместить кисть вперёд в текущем направлении (Display+).
+
+        step: расстояние в пикселях.
+        """
+
+    @staticmethod
+    def move_to(x: float = 64, y: float = 64) -> None:
+        """Переместить кисть в точку (x, y) на экране (Display+).
+
+        x: координата по горизонтали, 0–127 (центр — 64).
+
+        y: координата по вертикали, 0–127 (центр — 64).
+        """
+
+    @staticmethod
+    def move_x(step: float = 10) -> None:
+        """Сместить кисть по оси X (Display+).
+
+        step: смещение в пикселях (плюс — вправо, минус — влево).
+        """
+
+    @staticmethod
+    def move_y(step: float = 10) -> None:
+        """Сместить кисть по оси Y (Display+).
+
+        step: смещение в пикселях (плюс — вниз, минус — вверх).
+        """
+
+    @staticmethod
+    def circle(radius: float = 10, angle: float = 360) -> None:
+        """Нарисовать дугу или окружность (Display+).
+
+        radius: радиус в пикселях.
+
+        angle: угол дуги в градусах (360 — полная окружность).
+        """
+
+    @staticmethod
+    def get_x() -> float:
+        """Текущая координата X кисти (Display+)."""
+        return 0.0
+
+    @staticmethod
+    def get_y() -> float:
+        """Текущая координата Y кисти (Display+)."""
+        return 0.0
+
+    @staticmethod
+    def get_angle() -> float:
+        """Текущий угол направления кисти в градусах (Display+)."""
+        return 0.0
+
+    @staticmethod
+    def get_size() -> int:
+        """Текущая толщина кисти в пикселях (Display+)."""
+        return 1
+
+
+class sprite:
+    """Спрайт на экране CyberPi (расширение Display+).
+
+    Создаётся вызовом ``s = cyberpi.sprite()``.
+    """
+
+    def __init__(self) -> None:
+        """Создать новый спрайт (Display+)."""
+
+    def draw_pixel(
+        self, icon_or_matrix: SpriteIconName | list[list[int]] | str
+    ) -> None:
+        """Задать изображение спрайта встроенной иконкой или матрицей 16×16 (Display+).
+
+        icon_or_matrix: имя встроенной иконки (``"Music"``, ``"Image"``, ``"Video"``,
+        ``"Clock"``, ``"Play"``, ``"Pause"``, ``"Next"``, ``"Prev"``, ``"Sound"``,
+        ``"Temperature"``, ``"Light"``, ``"Motion"``, ``"Home"``, ``"Gear"``, ``"List"``,
+        ``"Right"``, ``"Wrong"``, ``"Shut_down"``, ``"Refresh"``, ``"Trash_can"``,
+        ``"Download"``, ``"Sunny"``, ``"Cloudy"``, ``"Rain"``, ``"Snow"``, ``"Train"``,
+        ``"Rocket"``, ``"Truck"``, ``"Car"``, ``"Droplet"``, ``"Distance"``, ``"Fire"``,
+        ``"Magnetic"``, ``"Gas"``, ``"Vision"``, ``"Color"``, ``"Overcast"``,
+        ``"Sandstorm"``, ``"Foggy"``) или двумерный список цветов 16×16.
+        """
+
+    def draw_text(self, text: object) -> None:
+        """Сделать спрайт текстовой надписью (Display+).
+
+        text: текст или значение для отображения.
+        """
+
+    def draw_QR(self, content: str) -> None:
+        """Сделать спрайт QR-кодом (Display+).
+
+        content: строка или ссылка для кодирования в QR-код.
+        """
+
+    def draw_sketch(self) -> None:
+        """Превратить текущий рисунок кисти (sketch) в этот спрайт (Display+)."""
+
+    def mirror(self, axis: MirrorAxis = "x") -> None:
+        """Отразить спрайт зеркально (Display+).
+
+        axis: ось отражения — ``"x"`` (влево-вправо) или ``"y"`` (вверх-вниз).
+        """
+
+    def delete(self) -> None:
+        """Удалить спрайт с экрана (Display+)."""
+
+    def set_align(self, align: LabelPos = "center") -> None:
+        """Задать опорную точку (якорь) спрайта (Display+).
+
+        align: ``"top_left"``, ``"top_mid"``, ``"top_right"``, ``"mid_left"``,
+        ``"center"``, ``"mid_right"``, ``"bottom_left"``, ``"bottom_mid"``
+        или ``"bottom_right"``.
+        """
+
+    def move_x(self, step: float = 8) -> None:
+        """Сместить спрайт по горизонтали X (Display+).
+
+        step: смещение в пикселях (плюс — вправо, минус — влево).
+        """
+
+    def move_y(self, step: float = 8) -> None:
+        """Сместить спрайт по вертикали Y (Display+).
+
+        step: смещение в пикселях (плюс — вниз, минус — вверх).
+        """
+
+    def move_to(self, x: float = 64, y: float = 64) -> None:
+        """Переместить спрайт в координаты (x, y) (Display+).
+
+        x: координата по горизонтали, 0–127.
+
+        y: координата по вертикали, 0–127.
+        """
+
+    def move_random(self) -> None:
+        """Переместить спрайт в случайную точку на экране (Display+)."""
+
+    def rotate(self, angle: float = 10) -> None:
+        """Повернуть спрайт по часовой стрелке (Display+).
+
+        angle: угол поворота в градусах.
+        """
+
+    def rotate_to(self, angle: float = 90) -> None:
+        """Установить угол поворота спрайта (Display+).
+
+        angle: направление в градусах.
+        """
+
+    def set_size(self, size: float = 100) -> None:
+        """Задать масштаб спрайта в процентах (Display+).
+
+        size: размер в процентах (100 — исходный).
+        """
+
+    def set_color(self, r: int = 255, g: int = 255, b: int = 255) -> None:
+        """Окрасить спрайт в цвет RGB (Display+).
+
+        r: красный, 0–255.
+
+        g: зелёный, 0–255.
+
+        b: синий, 0–255.
+        """
+
+    def close_color(self) -> None:
+        """Вернуть спрайту исходные цвета по умолчанию (Display+)."""
+
+    def show(self) -> None:
+        """Показать спрайт на экране (Display+)."""
+
+    def hide(self) -> None:
+        """Скрыть спрайт с экрана (Display+)."""
+
+    def z_max(self) -> None:
+        """Переместить спрайт на передний план (верхний слой) (Display+)."""
+
+    def z_min(self) -> None:
+        """Переместить спрайт на задний план (нижний слой) (Display+)."""
+
+    def z_up(self) -> None:
+        """Переместить спрайт на один слой вперёд (Display+)."""
+
+    def z_down(self) -> None:
+        """Переместить спрайт на один слой назад (Display+)."""
+
+    def is_touch(self, target: sprite | SpriteEdge) -> bool:
+        """Проверить касание другого спрайта или края экрана (Display+).
+
+        target: другой объект ``sprite`` или строка ``"edge"`` (край экрана).
+        """
+        return False
+
+    def get_x(self) -> int:
+        """Текущая координата X спрайта (Display+)."""
+        return 0
+
+    def get_y(self) -> int:
+        """Текущая координата Y спрайта (Display+)."""
+        return 0
+
+    def get_rotation(self) -> int:
+        """Текущий угол поворота спрайта в градусах (Display+)."""
+        return 0
+
+    def get_size(self) -> int:
+        """Текущий размер спрайта в процентах (Display+)."""
+        return 100
+
+    def get_align(self) -> str:
+        """Текущая опорная точка (якорь) спрайта (Display+)."""
+        return "center"
 
 
 class _Chart:
@@ -465,6 +823,7 @@ class _Cloud:
         option: ``sunrise_time``, ``sunrise_hour``, ``sunrise_minute``,
         ``sunrise_set``, ``sunset_hour``, ``sunset_minute``, ``hour``,
         ``minute``, ``second``, ``year``, ``month``, ``day``, ``date``.
+
         location: код города или часовой пояс от -12 до 12.
         """
         return ""
@@ -476,6 +835,7 @@ class _Cloud:
         language: ``chinese``, ``chinese_taiwan``, ``cantonese``, ``japanese``,
         ``english``, ``french``, ``german``, ``spanish``, ``portuguese``,
         ``russian``, ``korean``, ``italian``, ``dutch``.
+
         t: секунды или ``record``, чтобы взять последнюю запись.
         """
 
@@ -675,6 +1035,9 @@ audio = _Audio()
 led = _Led()
 console = _Console()
 display = _Display()
+background = _Background()
+screen = _Screen()
+sketch = _Sketch()
 linechart = _LineChart()
 barchart = _Chart()
 piechart = _Chart()
@@ -902,6 +1265,10 @@ __all__ = [
     "led",
     "console",
     "display",
+    "background",
+    "screen",
+    "sketch",
+    "sprite",
     "linechart",
     "barchart",
     "piechart",
