@@ -6,12 +6,11 @@
 В mBlock заливайте только свою программу. Этот файл на плату копировать
 не нужно.
 
-Официальный список: Python API Documentation for CyberPi, раздел Events.
+Список функций — со страницы Python API Documentation for CyberPi, раздел Events.
 Там имена записаны как ``cyberpi.event``. Залитая программа mBlock
 подключает тот же модуль через ``import event``.
 
-События работают в режиме Upload. В обычном Python 3 на компьютере
-их нет: там потоки пишут через ``threading``.
+События ``event`` работают только в режиме Upload.
 
 Заголовок срабатывает в момент события. Кнопка, которую держат
 нажатой, обработчик повторно не запускает.
@@ -154,6 +153,7 @@ def greater_than(
     """Значение стало больше порога: ``@event.greater_than(50, "microphone")``.
 
     threshold: порог от 0 до 100.
+    
     type: ``microphone``, ``light_sensor``, ``shake_val``, ``timer``.
     """
     return _keep
@@ -166,6 +166,7 @@ def smaller_than(
     """Значение стало меньше порога: ``@event.smaller_than(50, "light_sensor")``.
 
     threshold: порог от 0 до 100.
+    
     type: ``microphone``, ``light_sensor``, ``shake_val``, ``timer``.
     """
     return _keep
