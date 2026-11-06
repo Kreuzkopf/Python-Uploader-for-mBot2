@@ -1,12 +1,12 @@
 # Python Uploader For mBot2
 
-**Язык / Language:** [Русский](README.md) · [English](README.en.md)
+[Русский](README.md) · [English](README.en.md)
 
-Upload Python programs to **mBot2 / CyberPi** over USB.
+Upload Python programs to **mBot2 / CyberPi** over USB and Bluetooth.
 
-<img width="757" height="642" alt="image" src="https://github.com/user-attachments/assets/46fdf953-cd02-4442-9518-8e17749e2c87" />
+<img width="756" height="696" alt="image" src="https://github.com/user-attachments/assets/06297a7b-e789-4df0-867b-be58c0e414ba" />
 
-The program finds the robot over USB (on a COM port) or Bluetooth LE (`Makeblock_LE`), puts the board into upload mode, and sends the `.py` file to the robot — the same place the Makeblock editor writes it. After upload, the program stays on the board and runs without a computer.
+The program finds the robot over USB (on a COM port) or Bluetooth LE (`Makeblock_LE`), keeps a persistent connection to the selected robot, puts the board into upload mode, and sends the `.py` file — the same place the Makeblock editor writes it. After upload, the program stays on the board and runs without a computer.
 
 ---
 
@@ -31,8 +31,8 @@ The hashes must match (the `.sha256` file contains the expected SHA256 and the f
 
 1. Turn on the robot (connect via a USB data cable or enable Bluetooth on your PC).
 2. Start `Python_Uploader.exe`.
-3. Choose the `.py` program — with **Browse**, by dropping the file onto the window, or by passing the path as an argument.
-4. In the robot list, select **CyberPi / mBot2** (`COMx` over USB or `BLE:...` over Bluetooth).
+3. In the robot list, select **CyberPi / mBot2** (`COMx` over USB or `BLE:...` over Bluetooth) and click **Connect** to lock the robot to your PC.
+4. Choose the `.py` program — with **Browse**, by dropping the file onto the window, or by passing the path as an argument.
 5. Click **Upload to robot** (or press `Ctrl+Enter`).
 
 ### Start with a file from the command line
@@ -44,6 +44,8 @@ Python_Uploader.exe "C:\path\to\program.py"
 ### Interface
 
 - Automatic discovery of robots over USB (CH340) and Bluetooth LE (no manual Windows pairing required)
+- **Connect / Disconnect** button: maintains a persistent session and locks the selected port (prevents other PCs in a classroom from taking over your Bluetooth robot)
+- Displays the CyberPi firmware version (e.g. `44.01.011`)
 - Upload log (save, clear, timestamps)
 - Themes: match the system / light / dark
 - Language: Russian / English
@@ -73,7 +75,7 @@ Settings are stored in `%LOCALAPPDATA%\Python_Uploader\`.
 <img width="808" height="364" alt="advice" src="https://github.com/user-attachments/assets/471640b7-d5ae-49a3-bbe2-68767372a4f7" />
 
 The project includes an extension that binds a status-bar button to launching the program, and also launch with the F5 hotkey.
-Tasks starts `Python_Uploader.exe` with the path to the open `.py`. If the window is already open, the new file is filled in.
+Tasks starts `Python_Uploader.exe` with the path to the open `.py`. If the window is already open and connected to a robot, the new file is filled in and uploaded immediately.
 
 <img width="436" height="226" alt="uploader" src="https://github.com/user-attachments/assets/1e90509f-faa8-4842-a70e-4b90b40d520f" />
 
