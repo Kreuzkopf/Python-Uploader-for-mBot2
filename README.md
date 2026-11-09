@@ -4,7 +4,7 @@
 
 Загрузка Python-программ на **mBot2 / CyberPi** по USB и Bluetooth.
 
-<img width="760" height="646" alt="image" src="https://github.com/user-attachments/assets/7a4ba754-6fbd-42e8-8e37-470deeccac82" />
+<img width="756" height="642" alt="image" src="https://github.com/user-attachments/assets/32f0748f-78f7-4600-9199-0c3ec47e6440" />
 
 Программа находит робота по USB (на COM-порту) или по Bluetooth LE (`Makeblock_LE`), удерживает соединение с выбранным роботом, переводит плату в режим записи и отправляет файл `.py` — туда же, куда его пишет редактор Makeblock. После загрузки программа хранится на плате и работает без компьютера.
 
