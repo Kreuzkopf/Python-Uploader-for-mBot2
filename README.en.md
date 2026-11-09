@@ -4,7 +4,7 @@
 
 Upload Python programs to **mBot2 / CyberPi** over USB and Bluetooth.
 
-<img width="756" height="696" alt="image" src="https://github.com/user-attachments/assets/06297a7b-e789-4df0-867b-be58c0e414ba" />
+<img width="757" height="644" alt="image" src="https://github.com/user-attachments/assets/cd4d613b-8bdf-4ff3-94b7-bf117c44de9a" />
 
 The program finds the robot over USB (on a COM port) or Bluetooth LE (`Makeblock_LE`), keeps a persistent connection to the selected robot, puts the board into upload mode, and sends the `.py` file — the same place the Makeblock editor writes it. After upload, the program stays on the board and runs without a computer.
 
