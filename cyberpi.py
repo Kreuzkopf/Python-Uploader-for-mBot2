@@ -11,6 +11,8 @@
 События ``event`` работают только в режиме Upload.
 
 02.11.26 - добавлены все методы и объекты расширения Display+.
+14.11.26 - недостающие сигнатуры Function Extension: спрайты, doodle, Mesh LAN.
+14.11.26 - уточнены имена аргументов и типы Display+ по странице API.
 """
 
 from __future__ import annotations
@@ -34,7 +36,9 @@ ColorName = Literal[
     "white",
     "black",
 ]
+ColorAbbrev = Literal["r", "o", "y", "g", "c", "b", "p", "w", "k"]
 Color = int | ColorName
+SketchColor = Color | ColorAbbrev
 LedId = int | Literal["all"]
 
 ButtonName = Literal[
@@ -211,6 +215,45 @@ SpriteIconName = Literal[
     "Overcast",
     "Sandstorm",
     "Foggy",
+    "music",
+    "image",
+    "video",
+    "clock",
+    "play",
+    "pause",
+    "next",
+    "prev",
+    "sound",
+    "temperature",
+    "light",
+    "motion",
+    "home",
+    "gear",
+    "list",
+    "right",
+    "wrong",
+    "shut_down",
+    "refresh",
+    "trash_can",
+    "download",
+    "sunny",
+    "cloudy",
+    "rain",
+    "snow",
+    "train",
+    "rocket",
+    "truck",
+    "car",
+    "droplet",
+    "distance",
+    "fire",
+    "magnetic",
+    "gas",
+    "vision",
+    "color",
+    "overcast",
+    "sandstorm",
+    "foggy",
 ]
 MirrorAxis = Literal["x", "y"]
 SpriteEdge = Literal["edge"]
@@ -412,8 +455,10 @@ class _Display:
 
 class _Background:
     @staticmethod
-    def fill(r: int = 0, g: int = 0, b: int = 0) -> None:
-        """Залить фон экрана цветом RGB (Display+).
+    def fill(r: int, g: int, b: int) -> None:
+        """Залить весь фон экрана одним цветом RGB (Display+).
+
+        Сейчас многоцветный фон задать нельзя.
 
         r: красный, 0–255.
 
@@ -422,11 +467,42 @@ class _Background:
         b: синий, 0–255.
         """
 
+    @staticmethod
+    def copy() -> None:
+        """Скопировать всё, что сейчас на экране, в фон (Display+).
+
+        На странице API метод есть, но пока не открыт пользователям.
+        """
+
 
 class _Screen:
     @staticmethod
     def render() -> None:
-        """Принудительно отрисовать кадр на экране (Display+)."""
+        """Ручная отрисовка кадра (Display+).
+
+        Координаты, размер и направление спрайта применяются только после
+        ``render()`` или автоотрисовки.
+        """
+
+    @staticmethod
+    def enable_autorender() -> None:
+        """Включить автоотрисовку экрана, 10 кадров (Display+)."""
+
+    @staticmethod
+    def disable_autorender() -> None:
+        """Выключить автоотрисовку. Дальше кадр обновляется через ``render()`` (Display+)."""
+
+    @staticmethod
+    def color_get(x: int, y: int) -> str:
+        """Цвет пикселя, который сейчас виден на экране (Display+).
+
+        x: координата по горизонтали, 0–127.
+
+        y: координата по вертикали, 0–127.
+
+        Возвращает строку ``"0x000000"`` … ``"0xFFFFFF"``.
+        """
+        return "0x000000"
 
     @staticmethod
     def is_color(x: int, y: int) -> int:
@@ -450,9 +526,11 @@ class _Screen:
 
 
 class _Sketch:
+    """Кисть Doodle. По умолчанию: точка (64, 64), толщина 1, цвет белый, не рисует."""
+
     @staticmethod
     def clear() -> None:
-        """Очистить все рисунки (Doodle) на экране (Display+)."""
+        """Удалить все рисунки кисти на экране (Display+)."""
 
     @staticmethod
     def start() -> None:
@@ -463,203 +541,274 @@ class _Sketch:
         """Поднять кисть — закончить рисование (Display+)."""
 
     @staticmethod
-    def set_color(r: int = 255, g: int = 255, b: int = 255) -> None:
-        """Задать цвет кисти RGB (Display+).
+    def set_color(r: SketchColor, g: int = 0, b: int = 0) -> None:
+        """Задать цвет кисти (Display+).
 
-        r: красный, 0–255.
+        r: число 0–255 (красный) или имя/сокращение цвета:
+        ``red``/``r``, ``orange``/``o``, ``yellow``/``y``, ``green``/``g``,
+        ``cyan``/``c``, ``blue``/``b``, ``purple``/``p``, ``white``/``w``,
+        ``black``/``k``.
 
-        g: зелёный, 0–255.
+        g: зелёный, 0–255, если ``r`` — число.
 
-        b: синий, 0–255.
+        b: синий, 0–255, если ``r`` — число.
         """
 
     @staticmethod
-    def set_size(size: int = 1) -> None:
+    def set_size(size: int) -> None:
         """Задать толщину линии кисти (Display+).
+
+        Наконечник круглый.
 
         size: толщина в пикселях.
         """
 
     @staticmethod
-    def set_speed(speed: int = 10) -> None:
-        """Задать скорость рисования (Display+).
+    def set_speed(speed: int) -> None:
+        """Задать скорость перемещения кисти (Display+).
 
-        speed: скорость перемещения кисти.
+        speed: скорость, 1–10.
         """
 
     @staticmethod
-    def cw(angle: float = 10) -> None:
+    def cw(angle: int) -> None:
         """Повернуть направление кисти по часовой стрелке (Display+).
 
         angle: угол поворота в градусах.
         """
 
     @staticmethod
-    def set_angle(angle: float = 90) -> None:
-        """Установить направление кисти (Display+).
+    def ccw(angle: int) -> None:
+        """Повернуть направление кисти против часовой стрелки (Display+).
+
+        angle: угол поворота в градусах.
+        """
+
+    @staticmethod
+    def set_angle(angle: int) -> None:
+        """Установить направление, куда смотрит кисть (Display+).
 
         angle: угол направления в градусах.
         """
 
     @staticmethod
-    def move(step: float = 8) -> None:
+    def move(step: int) -> None:
         """Переместить кисть вперёд в текущем направлении (Display+).
 
         step: расстояние в пикселях.
         """
 
     @staticmethod
-    def move_to(x: float = 64, y: float = 64) -> None:
+    def move_to(x: int, y: int) -> None:
         """Переместить кисть в точку (x, y) на экране (Display+).
 
-        x: координата по горизонтали, 0–127 (центр — 64).
+        x: координата по горизонтали.
 
-        y: координата по вертикали, 0–127 (центр — 64).
+        y: координата по вертикали.
         """
 
     @staticmethod
-    def move_x(step: float = 10) -> None:
-        """Сместить кисть по оси X (Display+).
+    def move_x(step: int) -> None:
+        """Сместить кисть слева направо по оси X (Display+).
 
-        step: смещение в пикселях (плюс — вправо, минус — влево).
+        step: смещение в пикселях.
         """
 
     @staticmethod
-    def move_y(step: float = 10) -> None:
-        """Сместить кисть по оси Y (Display+).
+    def move_y(step: int) -> None:
+        """Сместить кисть сверху вниз по оси Y (Display+).
 
-        step: смещение в пикселях (плюс — вниз, минус — вверх).
+        step: смещение в пикселях.
         """
 
     @staticmethod
-    def circle(radius: float = 10, angle: float = 360) -> None:
-        """Нарисовать дугу или окружность (Display+).
+    def circle(r: int, angle: int) -> None:
+        """Нарисовать дугу. Центр — перпендикулярно направлению кисти (Display+).
 
-        radius: радиус в пикселях.
+        r: радиус дуги в пикселях.
 
-        angle: угол дуги в градусах (360 — полная окружность).
+        angle: угол дуги в градусах.
         """
 
     @staticmethod
-    def get_x() -> float:
+    def get_x() -> int:
         """Текущая координата X кисти (Display+)."""
-        return 0.0
+        return 0
 
     @staticmethod
-    def get_y() -> float:
+    def get_y() -> int:
         """Текущая координата Y кисти (Display+)."""
-        return 0.0
+        return 0
 
     @staticmethod
-    def get_angle() -> float:
-        """Текущий угол направления кисти в градусах (Display+)."""
-        return 0.0
+    def get_angle() -> int:
+        """Угол направления кисти в градусах (Display+)."""
+        return 0
 
     @staticmethod
     def get_size() -> int:
         """Текущая толщина кисти в пикселях (Display+)."""
         return 1
 
+    @staticmethod
+    def if_start() -> bool:
+        """Кисть опущена и рисует (Display+)."""
+        return False
+
 
 class sprite:
-    """Спрайт на экране CyberPi (расширение Display+).
+    """Спрайт на экране CyberPi (Display+).
 
     Создаётся вызовом ``s = cyberpi.sprite()``.
+
+    По умолчанию: точка (64, 64), направление 90°, размер 100%, якорь в центре,
+    показан, цвет белый, новый спрайт на верхнем слое.
     """
 
     def __init__(self) -> None:
         """Создать новый спрайт (Display+)."""
 
-    def draw_pixel(
-        self, icon_or_matrix: SpriteIconName | list[list[int]] | str
-    ) -> None:
-        """Задать изображение спрайта встроенной иконкой или матрицей 16×16 (Display+).
+    def pixel_set(self, color: str, x: int, y: int) -> None:
+        """Задать цвет одного пикселя спрайта (Display+).
 
-        icon_or_matrix: имя встроенной иконки (``"Music"``, ``"Image"``, ``"Video"``,
-        ``"Clock"``, ``"Play"``, ``"Pause"``, ``"Next"``, ``"Prev"``, ``"Sound"``,
-        ``"Temperature"``, ``"Light"``, ``"Motion"``, ``"Home"``, ``"Gear"``, ``"List"``,
-        ``"Right"``, ``"Wrong"``, ``"Shut_down"``, ``"Refresh"``, ``"Trash_can"``,
-        ``"Download"``, ``"Sunny"``, ``"Cloudy"``, ``"Rain"``, ``"Snow"``, ``"Train"``,
-        ``"Rocket"``, ``"Truck"``, ``"Car"``, ``"Droplet"``, ``"Distance"``, ``"Fire"``,
-        ``"Magnetic"``, ``"Gas"``, ``"Vision"``, ``"Color"``, ``"Overcast"``,
-        ``"Sandstorm"``, ``"Foggy"``) или двумерный список цветов 16×16.
+        color: цвет ``"0x000000"`` … ``"0xFFFFFF"``.
+
+        x: координата пикселя, 0–127.
+
+        y: координата пикселя, 0–127.
+
+        На странице API метод есть, но пока не открыт пользователям.
         """
 
-    def draw_text(self, text: object) -> None:
+    def draw_pixel(
+        self,
+        pixel: list[int],
+        x_size: int = 16,
+        y_size: int = 16,
+    ) -> None:
+        """Задать изображение спрайта массивом пикселей (Display+).
+
+        pixel: список цветов слева направо и сверху вниз, например
+        ``[0xFF0000, 0x00FF00, 0x0000FF]`` — красный, зелёный, синий.
+
+        x_size: ширина узора в пикселях, по умолчанию 16.
+
+        y_size: высота узора в пикселях, по умолчанию 16.
+
+        Цвета за пределами ширины и высоты отбрасываются. Пустые клетки
+        считаются прозрачными.
+        """
+
+    def draw_icon(self, name: SpriteIconName) -> None:
+        """Сделать спрайт встроенной иконкой (Display+).
+
+        name: имя иконки, например ``"music"``, ``"play"``, ``"home"``,
+        ``"sunny"``. На странице API метод помечен как to be implemented.
+        """
+
+    def draw_text(self, text: str) -> None:
         """Сделать спрайт текстовой надписью (Display+).
 
-        text: текст или значение для отображения.
+        text: строка. Размер шрифта по умолчанию 16 пикселей.
+
+        Поддерживаются китайский, английский, французский, испанский,
+        немецкий, итальянский, португальский, русский, корейский, японский
+        и нидерландский. Другие языки могут показать кракозябры.
         """
 
     def draw_QR(self, content: str) -> None:
         """Сделать спрайт QR-кодом (Display+).
 
-        content: строка или ссылка для кодирования в QR-код.
+        content: строка для кодирования в QR-код.
         """
 
-    def draw_sketch(self) -> None:
-        """Превратить текущий рисунок кисти (sketch) в этот спрайт (Display+)."""
+    def draw_qrcode(self, content: str) -> None:
+        """То же, что ``draw_QR``. Имя из примера на странице API (Display+).
 
-    def mirror(self, axis: MirrorAxis = "x") -> None:
+        content: строка для кодирования в QR-код.
+        """
+
+    def draw_sketch(self) -> sprite:
+        """Взять текущий рисунок кисти как изображение этого спрайта (Display+).
+
+        Якорь по умолчанию в точке (64, 64), поэтому эскиз оказывается
+        в центре экрана. Возвращает этот же спрайт.
+        """
+        return self
+
+    def mirror(self, axis: MirrorAxis) -> None:
         """Отразить спрайт зеркально (Display+).
 
-        axis: ось отражения — ``"x"`` (влево-вправо) или ``"y"`` (вверх-вниз).
+        axis: ``"x"`` — вокруг оси X, то есть сверху вниз;
+        ``"y"`` — вокруг оси Y, то есть слева направо.
         """
 
     def delete(self) -> None:
         """Удалить спрайт с экрана (Display+)."""
 
-    def set_align(self, align: LabelPos = "center") -> None:
+    def set_align(self, align_point: LabelPos = "center") -> None:
         """Задать опорную точку (якорь) спрайта (Display+).
 
-        align: ``"top_left"``, ``"top_mid"``, ``"top_right"``, ``"mid_left"``,
-        ``"center"``, ``"mid_right"``, ``"bottom_left"``, ``"bottom_mid"``
-        или ``"bottom_right"``.
+        Якорь — центр при движении и повороте.
+
+        align_point: ``"top_mid"``, ``"top_left"``, ``"top_right"``,
+        ``"center"``, ``"mid_left"``, ``"mid_right"``, ``"bottom_mid"``,
+        ``"bottom_left"`` или ``"bottom_right"``. По умолчанию ``"center"``.
         """
 
-    def move_x(self, step: float = 8) -> None:
+    def move_x(self, step: int) -> None:
         """Сместить спрайт по горизонтали X (Display+).
 
-        step: смещение в пикселях (плюс — вправо, минус — влево).
+        step: смещение в пикселях.
         """
 
-    def move_y(self, step: float = 8) -> None:
+    def move_y(self, step: int) -> None:
         """Сместить спрайт по вертикали Y (Display+).
 
-        step: смещение в пикселях (плюс — вниз, минус — вверх).
+        step: смещение в пикселях.
         """
 
-    def move_to(self, x: float = 64, y: float = 64) -> None:
+    def move_to(self, x: int, y: int) -> None:
         """Переместить спрайт в координаты (x, y) (Display+).
 
-        x: координата по горизонтали, 0–127.
+        x: координата по горизонтали.
 
-        y: координата по вертикали, 0–127.
+        y: координата по вертикали.
         """
 
     def move_random(self) -> None:
-        """Переместить спрайт в случайную точку на экране (Display+)."""
+        """Переместить спрайт в случайную точку. X и Y от 0 до 127 (Display+)."""
 
-    def rotate(self, angle: float = 10) -> None:
+    def rotate(self, angle: int) -> None:
         """Повернуть спрайт по часовой стрелке (Display+).
 
         angle: угол поворота в градусах.
         """
 
-    def rotate_to(self, angle: float = 90) -> None:
-        """Установить угол поворота спрайта (Display+).
+    def rotate_to(self, angle: int = 90) -> None:
+        """Повернуть спрайт в указанное направление (Display+).
 
-        angle: направление в градусах.
+        angle: направление в градусах, по умолчанию 90°.
         """
 
-    def set_size(self, size: float = 100) -> None:
-        """Задать масштаб спрайта в процентах (Display+).
+    def set_size(self, size: int = 100) -> None:
+        """Равномерно масштабировать спрайт в процентах (Display+).
 
-        size: размер в процентах (100 — исходный).
+        size: размер в процентах, по умолчанию 100.
         """
 
-    def set_color(self, r: int = 255, g: int = 255, b: int = 255) -> None:
-        """Окрасить спрайт в цвет RGB (Display+).
+    def set_scale(self, x_size: int = 100, y_size: int = 100) -> None:
+        """Масштабировать ширину и высоту спрайта по отдельности (Display+).
+
+        x_size: масштаб ширины в процентах, по умолчанию 100.
+
+        y_size: масштаб высоты в процентах, по умолчанию 100.
+
+        На странице API метод есть, но пока не открыт пользователям.
+        """
+
+    def set_color(self, r: int, g: int, b: int) -> None:
+        """Окрасить все непрозрачные пиксели спрайта фильтром RGB (Display+).
 
         r: красный, 0–255.
 
@@ -669,30 +818,39 @@ class sprite:
         """
 
     def close_color(self) -> None:
-        """Вернуть спрайту исходные цвета по умолчанию (Display+)."""
+        """Снять цветовой фильтр и вернуть вид из ``draw_XXX()`` (Display+)."""
 
     def show(self) -> None:
-        """Показать спрайт на экране (Display+)."""
+        """Показать спрайт. По умолчанию спрайты уже показаны (Display+)."""
 
     def hide(self) -> None:
         """Скрыть спрайт с экрана (Display+)."""
 
     def z_max(self) -> None:
-        """Переместить спрайт на передний план (верхний слой) (Display+)."""
+        """Вынести спрайт на передний план (Display+)."""
 
     def z_min(self) -> None:
-        """Переместить спрайт на задний план (нижний слой) (Display+)."""
+        """Убрать спрайт на задний план (Display+)."""
 
-    def z_up(self) -> None:
-        """Переместить спрайт на один слой вперёд (Display+)."""
+    def z_up(self, step: int) -> None:
+        """Поднять спрайт на указанное число слоёв (Display+).
 
-    def z_down(self) -> None:
-        """Переместить спрайт на один слой назад (Display+)."""
+        step: сколько слоёв ближе к зрителю.
+        """
 
-    def is_touch(self, target: sprite | SpriteEdge) -> bool:
-        """Проверить касание другого спрайта или края экрана (Display+).
+    def z_down(self, step: int) -> None:
+        """Опустить спрайт на указанное число слоёв (Display+).
 
-        target: другой объект ``sprite`` или строка ``"edge"`` (край экрана).
+        step: сколько слоёв дальше от зрителя.
+        """
+
+    def is_touch(self, other_sprite: sprite | SpriteEdge) -> bool:
+        """Касается ли спрайт другого спрайта или края экрана (Display+).
+
+        Касание — если непрозрачные пиксели пересеклись. Край экрана — если
+        координата непрозрачного пикселя ≥ 128.
+
+        other_sprite: другой ``sprite`` или ``"edge"``.
         """
         return False
 
@@ -705,15 +863,23 @@ class sprite:
         return 0
 
     def get_rotation(self) -> int:
-        """Текущий угол поворота спрайта в градусах (Display+)."""
+        """Угол, куда смотрит спрайт, от −180° до +180° (Display+)."""
         return 0
 
     def get_size(self) -> int:
         """Текущий размер спрайта в процентах (Display+)."""
         return 100
 
+    def get_xsize(self) -> int:
+        """Масштаб ширины спрайта в процентах (Display+)."""
+        return 100
+
+    def get_ysize(self) -> int:
+        """Масштаб высоты спрайта в процентах (Display+)."""
+        return 100
+
     def get_align(self) -> str:
-        """Текущая опорная точка (якорь) спрайта (Display+)."""
+        """Текущий якорь спрайта: ``"center"``, ``"top_left"`` и остальные (Display+)."""
         return "center"
 
 
@@ -1030,6 +1196,59 @@ class _Event:
 
         return decorate
 
+    @staticmethod
+    def mesh_broadcast(message: str) -> Callable[[F], F]:
+        """Слушать сообщение Mesh LAN и выполнить код при получении.
+
+        message: имя сообщения, например ``"hello"``.
+
+        На странице API раздел помечен как to be implemented.
+        """
+
+        def decorate(callback: F) -> F:
+            return callback
+
+        return decorate
+
+
+class _Mesh:
+    @staticmethod
+    def set(name: str = "mesh1") -> None:
+        """Создать сеть Mesh LAN (Function Extension).
+
+        name: имя сети, по умолчанию ``"mesh1"``.
+
+        На странице API раздел помечен как to be implemented.
+        """
+
+    @staticmethod
+    def join(name: str = "mesh1") -> None:
+        """Подключиться к сети Mesh LAN (Function Extension).
+
+        name: имя сети, по умолчанию ``"mesh1"``.
+        """
+
+
+class _MeshBroadcast:
+    @staticmethod
+    def set(message: str, val: object) -> None:
+        """Отправить широковещательное сообщение Mesh LAN со значением.
+
+        message: имя сообщения.
+
+        val: значение в сообщении.
+        """
+
+    @staticmethod
+    def get(message: str) -> object:
+        """Получить значение из принятого сообщения Mesh LAN.
+
+        message: имя сообщения.
+
+        Возвращает значение, которое передали через ``mesh_broadcast.set``.
+        """
+        return ""
+
 
 audio = _Audio()
 led = _Led()
@@ -1050,6 +1269,8 @@ upload_broadcast = _MessageBus()
 cloud_broadcast = _MessageBus()
 cloud = _Cloud()
 event = _Event()
+mesh = _Mesh()
+mesh_broadcast = _MeshBroadcast()
 
 
 def get_bri() -> int:
@@ -1281,6 +1502,8 @@ __all__ = [
     "cloud_broadcast",
     "cloud",
     "event",
+    "mesh",
+    "mesh_broadcast",
     "mbot2",
     "pocket",
     "get_bri",
