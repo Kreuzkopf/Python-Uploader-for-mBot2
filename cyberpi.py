@@ -375,7 +375,13 @@ class _Led:
 
     @staticmethod
     def show(color: str) -> None:
-        """Задать цвета пяти светодиодов строкой: ``\"r g b y c\"``."""
+        """Задать цвета пяти светодиодов строкой: ``\"r g b y c\"``.
+        
+        color: ``black``, ``red``, ``orange``, ``yellow``, ``green``, ``cyan``,
+        ``blue``, ``purple``, ``white``.
+         
+        Цвет ``black`` выключает подсветку.
+        """
 
     @staticmethod
     def move(step: int = 1) -> None:
