@@ -16,7 +16,7 @@
 нажатой, обработчик повторно не запускает.
 
 Страница ``event`` для Halocode (``shaked``, ``touchpad``, ``mesh_message``)
-описывает другую плату. Этих функций здесь нет.
+описывает другую плату. ``mesh_broadcast`` для CyberPi — из Function Extension.
 """
 
 from __future__ import annotations
@@ -202,6 +202,16 @@ def wifi_broadcast(message: str) -> Callable[[F], F]:
     return _keep
 
 
+def mesh_broadcast(message: str) -> Callable[[F], F]:
+    """Слушать сообщение Mesh LAN и выполнить код при получении.
+
+    message: имя сообщения, например ``"hello"``.
+
+    На странице API раздел помечен как to be implemented.
+    """
+    return _keep
+
+
 __all__ = [
     "start",
     "is_press",
@@ -228,4 +238,5 @@ __all__ = [
     "upload_broadcast",
     "cloud_broadcast",
     "wifi_broadcast",
+    "mesh_broadcast",
 ]
