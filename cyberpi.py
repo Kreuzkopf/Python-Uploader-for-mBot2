@@ -430,16 +430,19 @@ class _Display:
         size: int,
         x: int | LabelPos = "center",
         y: int = 0,
+        index: int = 0,
     ) -> None:
         """Показать надпись.
 
-        size: 16, 24 или 32.
+        size: 12, 16, 24 или 32.
 
         x: координата 0–128 или позиция ``center``, ``top_mid``, ``top_left``,
         ``top_right``, ``mid_left``, ``mid_right``, ``bottom_mid``,
         ``bottom_left``, ``bottom_right``.
 
         y: координата 0–128, если x задан числом.
+        
+        index: номер надписи от 0 до 7. Максимум 8 надписей.
         """
 
     @staticmethod
