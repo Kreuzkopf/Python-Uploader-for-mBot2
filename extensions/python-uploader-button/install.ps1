@@ -1,25 +1,29 @@
-# Установка кнопки Uploader в статус-бар Cursor / VS Code.
-$ErrorActionPreference = "Stop"
-Set-Location $PSScriptRoot
+﻿$ErrorActionPreference = "Stop"
+$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $here
 
-python .\pack_vsix.py
+python pack_vsix.py
 $vsix = Get-ChildItem -Filter "*.vsix" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 if (-not $vsix) {
-  throw "VSIX не собран"
+    Write-Error "VSIX не собран."
 }
 
-$editor = $null
-foreach ($name in @("cursor", "code")) {
-  $cmd = Get-Command $name -ErrorAction SilentlyContinue
-  if ($cmd) { $editor = $cmd.Source; break }
-}
-if (-not $editor) {
-  Write-Host "Не найден cursor/code в PATH."
-  Write-Host "Ctrl+Shift+P -> Extensions: Install from VSIX..."
-  Write-Host $vsix.FullName
-  exit 1
+function Install-Vsix([string]$command) {
+    $exe = Get-Command $command -ErrorAction SilentlyContinue
+    if (-not $exe) {
+        return $false
+    }
+    & $exe.Source --install-extension $vsix.FullName --force
+    return $true
 }
 
-Write-Host "Установка $($vsix.Name) через $editor"
-& $editor --install-extension $vsix.FullName
-Write-Host "Готово. Reload Window, если кнопки ещё нет."
+$installed = $false
+foreach ($cmd in @("cursor", "code")) {
+    if (Install-Vsix $cmd) {
+        Write-Output "Установлено через $cmd : $($vsix.Name)"
+        $installed = $true
+    }
+}
+if (-not $installed) {
+    Write-Error "Не найдены cursor или code в PATH. Установите VSIX вручную: $($vsix.FullName)"
+}

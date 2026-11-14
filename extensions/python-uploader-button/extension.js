@@ -37,18 +37,59 @@ function resolveExePath(workspaceRoot, configured) {
   }
   if (workspaceRoot) {
     candidates.push(path.join(workspaceRoot, "Python_Uploader.exe"));
+    const nearRoot = findExeNear(workspaceRoot);
+    if (nearRoot) {
+      candidates.push(nearRoot);
+    }
+  }
+  const editor = vscode.window.activeTextEditor;
+  if (editor && editor.document.uri.scheme === "file") {
+    const nearFile = findExeNear(path.dirname(editor.document.uri.fsPath));
+    if (nearFile) {
+      candidates.push(nearFile);
+    }
   }
   return candidates.find((candidate) => isFile(candidate));
 }
 
 /**
- * @returns {boolean}
+ * @param {string} startDir
+ * @returns {string | undefined}
  */
+function findExeNear(startDir) {
+  let dir = startDir;
+  for (let i = 0; i < 8 && dir; i += 1) {
+    const candidate = path.join(dir, "Python_Uploader.exe");
+    if (isFile(candidate)) {
+      return candidate;
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) {
+      break;
+    }
+    dir = parent;
+  }
+  return undefined;
+}
+
 function workspaceHasUploader() {
   const folders = vscode.workspace.workspaceFolders || [];
-  return folders.some((folder) =>
-    isFile(path.join(folder.uri.fsPath, "Python_Uploader.exe"))
-  );
+  if (
+    folders.some((folder) => isFile(path.join(folder.uri.fsPath, "Python_Uploader.exe")))
+  ) {
+    return true;
+  }
+  const configured = vscode.workspace
+    .getConfiguration("Python_Uploader")
+    .get("exePath", "");
+  if (configured && isFile(configured)) {
+    return true;
+  }
+  const editor = vscode.window.activeTextEditor;
+  if (editor && editor.document.uri.scheme === "file") {
+    return Boolean(findExeNear(path.dirname(editor.document.uri.fsPath)));
+  }
+  return folders.some((folder) => Boolean(findExeNear(folder.uri.fsPath)));
 }
 
 function updateAvailability() {
@@ -96,6 +137,35 @@ function workspaceRootFor(pyFile) {
 }
 
 async function launchUploader() {
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    vscode.window.showWarningMessage(
+      "Откройте файл .py — Uploader запустится с этим файлом."
+    );
+    return;
+  }
+
+  // Сначала диск, потом Uploader: иначе на робота уйдёт прошлый сохранённый .py.
+  if (editor.document.isUntitled) {
+    const savedUntitled = await editor.document.save();
+    if (!savedUntitled) {
+      vscode.window.showErrorMessage(
+        "Не удалось сохранить файл перед отправкой в Python Uploader."
+      );
+      return;
+    }
+  }
+  await vscode.workspace.saveAll(false);
+  if (editor.document.isDirty) {
+    const saved = await editor.document.save();
+    if (!saved) {
+      vscode.window.showErrorMessage(
+        "Не удалось сохранить файл перед отправкой в Python Uploader."
+      );
+      return;
+    }
+  }
+
   const pyFile = currentPyFile();
   if (!pyFile) {
     vscode.window.showWarningMessage(
@@ -149,6 +219,9 @@ function activate(context) {
   );
   context.subscriptions.push(
     vscode.workspace.onDidChangeWorkspaceFolders(updateAvailability)
+  );
+  context.subscriptions.push(
+    vscode.window.onDidChangeActiveTextEditor(() => updateAvailability())
   );
 }
 

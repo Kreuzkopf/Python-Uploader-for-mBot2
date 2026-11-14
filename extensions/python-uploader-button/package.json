@@ -2,7 +2,7 @@
   "name": "python-uploader-button",
   "displayName": "Python Uploader Button",
   "description": "Синяя кнопка в статус-баре и F5: запуск Python Uploader с текущим .py",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "Клуб Робототехники Юный Инженер",
   "engines": {
     "vscode": "^1.74.0"
@@ -20,9 +20,19 @@
     ],
     "keybindings": [
       {
+        "key": "f5",
+        "command": "-workbench.action.debug.start",
+        "when": "resourceExtname == '.py' || editorLangId == python"
+      },
+      {
+        "key": "f5",
+        "command": "-workbench.action.debug.run",
+        "when": "resourceExtname == '.py' || editorLangId == python"
+      },
+      {
         "command": "PythonUploader.launch",
         "key": "f5",
-        "when": "pythonUploader.available && editorTextFocus && editorLangId == python"
+        "when": "!inDebugMode && (resourceExtname == '.py' || editorLangId == python)"
       }
     ],
     "configuration": {

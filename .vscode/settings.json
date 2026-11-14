@@ -1,0 +1,5 @@
+{
+  "task.saveBeforeRun": "always",
+  "debug.saveBeforeStart": "always",
+  "files.autoSave": "onFocusChange"
+}

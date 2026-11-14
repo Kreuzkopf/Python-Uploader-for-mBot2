@@ -5,7 +5,7 @@
 Синяя кнопка **→ Uploader** в статус-баре Cursor/VS Code и клавиша **F5**.
 
 Запускает `Python_Uploader.exe` и передаёт путь к открытому `.py`.
-F5 делает это только в папке, где лежит `Python_Uploader.exe`. В других проектах F5 по-прежнему запускает отладку.
+Перед запуском сохраняет файлы. F5 на `.py` запускает Uploader, а не меню отладчика.
 
 Кнопка сама из папки проекта не включается. Её нужно один раз установить в редактор.
 
@@ -14,10 +14,10 @@ F5 делает это только в папке, где лежит `Python_Upl
 Из корня этой папки:
 
 ```powershell
-.\.vscode\extensions\python-uploader-button\install.ps1
+.\extensions\python-uploader-button\install.ps1
 ```
 
-Или в Cursor: `Ctrl+Shift+P` → **Extensions: Install from Location...** → папка `.vscode\extensions\python-uploader-button`.
+Или в Cursor: `Ctrl+Shift+P` → **Extensions: Install from VSIX...** → `extensions\python-uploader-button\python-uploader-button.vsix`.
 
 После установки: Reload Window, если кнопки ещё нет.
 
