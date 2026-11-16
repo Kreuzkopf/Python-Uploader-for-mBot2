@@ -17,11 +17,11 @@
 .\extensions\python-uploader-button\install.ps1
 ```
 
-Или в Cursor: `Ctrl+Shift+P` → **Extensions: Install from VSIX...** → `extensions\python-uploader-button\python-uploader-button.vsix`.
+Или в VS Code: `Ctrl+Shift+P` → **Extensions: Install from VSIX...** → `extensions\python-uploader-button\python-uploader-button.vsix`.
 
-После установки: Reload Window, если кнопки ещё нет.
+После установки необходимо перезапустить приложение.
 
-`pack_vsix.py` собирает пакет расширения. `install.ps1` вызывает его и ставит пакет в Cursor или VS Code. Эти два файла нужны при установке на компьютер.
+`pack_vsix.py` собирает пакет расширения. `install.ps1` вызывает его и ставит пакет VS Code. Эти два файла нужны при установке на компьютер.
 
 ## Путь к exe
 
