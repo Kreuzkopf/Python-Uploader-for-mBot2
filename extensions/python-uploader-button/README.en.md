@@ -17,7 +17,7 @@ From the root of this folder:
 .\extensions\python-uploader-button\install.ps1
 ```
 
-Or in VS Code: `Ctrl+Shift+P` → **Extensions: Install from VSIX...** → `extensions\python-uploader-button\python-uploader-button.vsix`.
+Or in VS Code: `Ctrl+Shift+P` → **Extensions: Install from VSIX...** → `python-uploader-button-0.1.2.vsix` in this folder.
 
 After install: Reload Window if the button does not appear yet.
 
