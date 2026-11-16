@@ -1,6 +1,6 @@
 # Python Uploader Button extension for VS Code
 
-**Language / Язык:** [Русский](README.md) · [English](README.en.md)
+[Русский](README.md) · [English](README.en.md)
 
 A blue **→ Uploader** button in the Cursor/VS Code status bar and the **F5** key.
 
@@ -17,11 +17,11 @@ From the root of this folder:
 .\extensions\python-uploader-button\install.ps1
 ```
 
-Or in Cursor: `Ctrl+Shift+P` → **Extensions: Install from VSIX...** → `extensions\python-uploader-button\python-uploader-button.vsix`.
+Or in VS Code: `Ctrl+Shift+P` → **Extensions: Install from VSIX...** → `extensions\python-uploader-button\python-uploader-button.vsix`.
 
 After install: Reload Window if the button does not appear yet.
 
-`pack_vsix.py` builds the extension package. `install.ps1` runs it and installs the package into Cursor or VS Code. These two files are needed when setting up the computer, not when uploading a program to the robot.
+`pack_vsix.py` builds the extension package. `install.ps1` runs it and installs the package into VS Code. These two files are needed when setting up the computer, not when uploading a program to the robot.
 
 ## Path to the exe
 
