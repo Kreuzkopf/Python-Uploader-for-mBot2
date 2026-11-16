@@ -17,7 +17,7 @@
 .\extensions\python-uploader-button\install.ps1
 ```
 
-Или в VS Code: `Ctrl+Shift+P` → **Extensions: Install from VSIX...** → `extensions\python-uploader-button\python-uploader-button.vsix`.
+Или в VS Code: `Ctrl+Shift+P` → **Extensions: Install from VSIX...** → `python-uploader-button-0.1.2.vsix` в этой папке.
 
 После установки необходимо перезапустить приложение.
 
